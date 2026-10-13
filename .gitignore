@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Manim
+media/videos/
+media/images/
+media/Tex/
+media/texts/
+media/partial_movie_files/
+
+# Archivos temporales
+*.log
