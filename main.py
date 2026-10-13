@@ -252,3 +252,157 @@ class ConstruccionRectangulos(Scene):
 
         self.play(Write(resultado))
         self.wait(3)
+
+class ComparacionAreaExacta(Scene):
+    def construct(self):
+        titulo = Text(
+            "Comparacion con el area exacta",
+            font_size=32
+        ).to_edge(UP)
+
+        ejes = Axes(
+            x_range=[0, 2.3, 0.5],
+            y_range=[0, 4.5, 1],
+            x_length=6,
+            y_length=4,
+            axis_config={"include_numbers": True},
+            tips=False
+        ).shift(LEFT * 1.6 + DOWN * 0.5)
+
+        curva = ejes.plot(
+            funcion,
+            x_range=[A, B],
+            color=YELLOW
+        )
+
+        area = ejes.get_area(
+            curva,
+            x_range=[A, B],
+            color=GREEN,
+            opacity=0.3
+        )
+
+        formula = MathTex(
+            r"A=\int_0^2 x^2\,dx=\frac{8}{3}"
+        ).scale(0.75).to_edge(RIGHT).shift(UP * 1.5)
+
+        valor_exacto = MathTex(
+            r"A\approx2.6667"
+        ).scale(0.8).next_to(formula, DOWN, buff=0.4)
+
+        self.play(Write(titulo))
+        self.play(Create(ejes), Create(curva))
+        self.play(FadeIn(area))
+        self.play(Write(formula), Write(valor_exacto))
+        self.wait(1)
+
+        rectangulos_anteriores = None
+        informacion_anterior = None
+
+        for n in VALORES_N:
+            dx = (B - A) / n
+            suma = suma_riemann_derecha(n)
+            error = abs(suma - AREA_EXACTA)
+
+            rectangulos = ejes.get_riemann_rectangles(
+                curva,
+                x_range=[A, B],
+                dx=dx,
+                input_sample_type="right",
+                color=BLUE,
+                fill_opacity=0.35,
+                stroke_width=1
+            )
+
+            informacion = VGroup(
+                MathTex(rf"n={n}"),
+                MathTex(rf"R_{{{n}}}={suma:.4f}"),
+                MathTex(rf"E_{{{n}}}={error:.4f}")
+            ).arrange(
+                DOWN,
+                aligned_edge=LEFT,
+                buff=0.35
+            )
+
+            informacion.scale(0.8)
+            informacion.to_edge(RIGHT).shift(DOWN * 1)
+
+            if rectangulos_anteriores is None:
+                self.play(
+                    FadeIn(rectangulos),
+                    FadeIn(informacion),
+                    run_time=1.5
+                )
+            else:
+                self.play(
+                    ReplacementTransform(
+                        rectangulos_anteriores,
+                        rectangulos
+                    ),
+                    ReplacementTransform(
+                        informacion_anterior,
+                        informacion
+                    ),
+                    run_time=2
+                )
+
+            self.wait(1.5)
+
+            rectangulos_anteriores = rectangulos
+            informacion_anterior = informacion
+
+        conclusion = Text(
+            "El error disminuye cuando n aumenta",
+            font_size=26,
+            color=GREEN
+        ).to_edge(DOWN)
+
+        self.play(FadeIn(conclusion))
+        self.wait(3)
+
+class ConclusionRiemann(Scene):
+    def construct(self):
+        titulo = Text(
+            "Conclusion: hacia el area exacta",
+            font_size=34
+        ).to_edge(UP)
+
+        self.play(Write(titulo))
+
+        # Relacion entre n y el ancho de los rectangulos
+        formula_dx = MathTex(
+            r"\Delta x=\frac{2}{n}"
+        ).scale(1.2).shift(UP * 1.5)
+
+        explicacion = Text(
+            "Al aumentar n, disminuye el ancho",
+            font_size=28
+        ).next_to(formula_dx, DOWN, buff=0.5)
+
+        self.play(Write(formula_dx))
+        self.play(FadeIn(explicacion))
+        self.wait(2)
+
+        # Limpiar el centro para mostrar el limite
+        self.play(
+            FadeOut(formula_dx),
+            FadeOut(explicacion)
+        )
+
+        limite = MathTex(
+            r"\lim_{n\to\infty}R_n"
+            r"=\int_0^2x^2\,dx"
+            r"=\frac{8}{3}"
+        ).scale(1.05)
+
+        self.play(Write(limite), run_time=3)
+        self.wait(2)
+
+        mensaje = Text(
+            "Mas rectangulos, menor error",
+            font_size=30,
+            color=GREEN
+        ).next_to(limite, DOWN, buff=0.8)
+
+        self.play(FadeIn(mensaje))
+        self.wait(3)
