@@ -1,8 +1,8 @@
 # Cálculo e Investigación Matemática: Sumas de Riemann por Punto Medio
 
 **Asignatura:** Cálculo Intermedio  
-**Redactor:** Alejandro (Grupo 3) apoyado en la IA, para redaccion formal   
-**Función:** f(x) = x^2  
+**Integrantes:** Alejandro (Grupo 3)  
+**Función:** f(x) = 2x^2  
 **Intervalo:** [a, b] = [0, 2]  
 **Método:** Suma de Riemann con Punto Medio (x_i*)
 
@@ -10,7 +10,7 @@
 
 ## 1. Fundamentación Teórica del Método del Punto Medio
 
-Para aproximar el área bajo la curva f(x) = x^2 en el intervalo [0, 2], dividimos el dominio en n subintervalos de igual longitud:
+Para aproximar el área bajo la curva f(x) = 2x^2 en el intervalo [0, 2], dividimos el dominio en n subintervalos de igual longitud:
 
 Delta x = (b - a) / n = (2 - 0) / n = 2 / n
 
@@ -20,7 +20,7 @@ x_i* = (x_{i-1} + x_i) / 2 = (i - 0.5) * Delta x
 
 La suma de Riemann general para n particiones viene dada por:
 
-S_n = Sumatoria desde i=1 hasta n de [ f(x_i*) * Delta x ] = Sumatoria desde i=1 hasta n de [ (x_i*)^2 * Delta x ]
+S_n = Sumatoria desde i=1 hasta n de [ f(x_i*) * Delta x ] = Sumatoria desde i=1 hasta n de [ 2(x_i*)^2 * Delta x ]
 
 ---
 
@@ -33,65 +33,58 @@ S_n = Sumatoria desde i=1 hasta n de [ f(x_i*) * Delta x ] = Sumatoria desde i=1
   * [0.5, 1.0] -> x_2* = 0.75
   * [1.0, 1.5] -> x_3* = 1.25
   * [1.5, 2.0] -> x_4* = 1.75
-* **Alturas f(x_i*) = (x_i*)^2:**
-  * f(x_1*) = 0.25^2 = 0.0625
-  * f(x_2*) = 0.75^2 = 0.5625
-  * f(x_3*) = 1.25^2 = 1.5625
-  * f(x_4*) = 1.75^2 = 3.0625
+* **Alturas f(x_i*) = 2(x_i*)^2:**
+  * f(x_1*) = 2 * (0.25)^2 = 0.125
+  * f(x_2*) = 2 * (0.75)^2 = 1.125
+  * f(x_3*) = 2 * (1.25)^2 = 3.125
+  * f(x_4*) = 2 * (1.75)^2 = 6.125
 * **Áreas de Rectángulos y Suma de Riemann:**
-  * A_1 = 0.5 * 0.0625 = 0.03125
-  * A_2 = 0.5 * 0.5625 = 0.28125
-  * A_3 = 0.5 * 1.5625 = 0.78125
-  * A_4 = 0.5 * 3.0625 = 1.53125
+  * A_1 = 0.5 * 0.125 = 0.0625
+  * A_2 = 0.5 * 1.125 = 0.5625
+  * A_3 = 0.5 * 3.125 = 1.5625
+  * A_4 = 0.5 * 6.125 = 3.0625
 
-S_4 = 0.03125 + 0.28125 + 0.78125 + 1.53125 = 2.625
+S_4 = 0.0625 + 0.5625 + 1.5625 + 3.0625 = 5.2500
 
 ---
 
 ### 2.2 Caso n = 8
 * **Ancho de subintervalo:** Delta x = 2 / 8 = 0.25
-* **Puntos Medios (x_i*):**  
-  x_1* = 0.125, x_2* = 0.375, x_3* = 0.625, x_4* = 0.875, x_5* = 1.125, x_6* = 1.375, x_7* = 1.625, x_8* = 1.875
-* **Alturas f(x_i*):**  
-  0.015625, 0.140625, 0.390625, 0.765625, 1.265625, 1.890625, 2.640625, 3.515625
-* **Cálculo de la Suma:**
-  * Suma de áreas izquierdas (A_1 a A_4): 0.328125
-  * Suma de áreas derechas (A_5 a A_8): 2.328125
+* **Planteamiento:** S_8 = Sumatoria desde i=1 hasta 8 de [ 2 * ((i - 0.5) * 0.25)^2 * 0.25 ]
+* **Desarrollo de constantes y binomio:**
+  * S_8 = 0.03125 * [ Suma de i^2 - Suma de i + Suma de 0.25 ]
+  * Suma de i^2 = (8 * 9 * 17) / 6 = 204
+  * Suma de i = (8 * 9) / 2 = 36
+  * Suma de constante = 8 * 0.25 = 2
+  * Paréntesis = 204 - 36 + 2 = 170
 
-S_8 = 0.328125 + 2.328125 = 2.65625
+S_8 = 0.03125 * 170 = 5.3125
 
 ---
 
 ## 3. Generalización mediante Sumatorias para Particiones Grandes
 
-Cuando el número de subintervalos aumenta (n = 16 y n = 32), la evaluación individual resulta ineficiente. Se utiliza la notación de sumatoria desarrollando el binomio del punto medio:
-
-S_n = (Delta x)^3 * [ Suma de i^2 - Suma de i + Suma de 0.25 ]
-
-Utilizando las fórmulas conocidas:
-* Suma de i^2 = [n(n+1)(2n+1)] / 6
-* Suma de i = [n(n+1)] / 2
-* Suma de constante = 0.25 * n
-
----
-
 ### 3.1 Caso n = 16
-* Delta x = 0.125 -> (Delta x)^3 = 0.001953125
-* Suma de i^2 = (16 * 17 * 33) / 6 = 1496
-* Suma de i = (16 * 17) / 2 = 136
-* Suma de constante = 16 * 0.25 = 4
+* **Ancho de subintervalo:** Delta x = 2 / 16 = 0.125 -> (Delta x)^3 * 2 = 0.00390625
+* **Aplicación de fórmulas:**
+  * Suma de i^2 = (16 * 17 * 33) / 6 = 1496
+  * Suma de i = (16 * 17) / 2 = 136
+  * Suma de constante = 16 * 0.25 = 4
+  * Paréntesis = 1496 - 136 + 4 = 1364
 
-S_16 = 0.001953125 * (1496 - 136 + 4) = 0.001953125 * 1364 = 2.6640625
+S_16 = 0.00390625 * 1364 = 5.328125
 
 ---
 
 ### 3.2 Caso n = 32
-* Delta x = 0.0625 -> (Delta x)^3 = 0.000244140625
-* Suma de i^2 = (32 * 33 * 65) / 6 = 11440
-* Suma de i = (32 * 33) / 2 = 528
-* Suma de constante = 32 * 0.25 = 8
+* **Ancho de subintervalo:** Delta x = 2 / 32 = 0.0625 -> (Delta x)^3 * 2 = 0.00048828125
+* **Aplicación de fórmulas:**
+  * Suma de i^2 = (32 * 33 * 65) / 6 = 11440
+  * Suma de i = (32 * 33) / 2 = 528
+  * Suma de constante = 32 * 0.25 = 8
+  * Paréntesis = 11440 - 528 + 8 = 10920
 
-S_32 = 0.000244140625 * (11440 - 528 + 8) = 0.000244140625 * 10920 = 2.666015625
+S_32 = 0.00048828125 * 10920 = 5.33203125
 
 ---
 
@@ -99,12 +92,12 @@ S_32 = 0.000244140625 * (11440 - 528 + 8) = 0.000244140625 * 10920 = 2.666015625
 
 | Cantidad de Subintervalos (n) | Ancho de Subintervalo (Delta x) | Valor de la Suma de Riemann (S_n) |
 | :---: | :---: | :---: |
-| 4 | 0.5000 | 2.625000000 |
-| 8 | 0.2500 | 2.656250000 |
-| 16 | 0.1250 | 2.664062500 |
-| 32 | 0.0625 | 2.666015625 |
+| 4 | 0.5000 | 5.25000000 |
+| 8 | 0.2500 | 5.31250000 |
+| 16 | 0.1250 | 5.32812500 |
+| 32 | 0.0625 | 5.33203125 |
 
 ### Conclusión Matemática:
 A medida que el número de rectángulos n aumenta, la aproximación por el punto medio se acerca de manera monótona al valor real del área bajo la curva. El valor exacto se obtiene mediante el límite cuando n tiende a infinito:
 
-Área Exacta = Integral desde 0 hasta 2 de (x^2) dx = x^3 / 3 (evaluado entre 0 y 2) = 8 / 3 aprox. 2.666666...
+Área Exacta = Integral desde 0 hasta 2 de (2x^2) dx = [ 2x^3 / 3 ] evaluado entre 0 y 2 = 16 / 3 aprox. 5.333333...
