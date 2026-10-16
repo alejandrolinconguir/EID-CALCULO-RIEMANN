@@ -2,36 +2,41 @@
 from manim import *
 
 
+
 A = 0
-B = 2
+B = 4
 VALORES_N = [4, 8, 16, 32]
-AREA_EXACTA = 8 / 3
+AREA_EXACTA = 128 / 3
 
 
 def funcion(x):
-    return x**2
+    return 2 * x**2
 
 
 def suma_riemann_derecha(n):
     dx = (B - A) / n
-    return sum(funcion(A + i * dx) * dx for i in range(1, n + 1))
+    return sum(
+        funcion(A + i * dx) * dx
+        for i in range(1, n + 1)
+    )
+
 
 
 class SumasRiemann(Scene):
     def construct(self):
         titulo = Text(
             "Sumas de Riemann: extremos derechos",
-            font_size=34
+            font_size=32
         ).to_edge(UP)
 
         ejes = Axes(
-            x_range=[0, 2.2, 0.5],
-            y_range=[0, 4.5, 1],
-            x_length=7,
-            y_length=4.5,
+            x_range=[0, 4.5, 1],
+            y_range=[0, 36, 8],
+            x_length=6,
+            y_length=4,
             axis_config={"include_numbers": True},
             tips=False
-        ).shift(LEFT * 1.3 + DOWN * 0.4)
+        ).shift(LEFT * 1.6 + DOWN * 0.5)
 
         curva = ejes.plot(
             funcion,
@@ -40,9 +45,9 @@ class SumasRiemann(Scene):
         )
 
         etiqueta = MathTex(
-            "f(x)=x^2",
+            "f(x)=2x^2",
             color=YELLOW
-        ).next_to(ejes, RIGHT).shift(UP * 1.5)
+        ).scale(0.8).to_edge(RIGHT).shift(UP * 1.8)
 
         self.play(Write(titulo))
         self.play(Create(ejes), run_time=1.5)
@@ -68,20 +73,18 @@ class SumasRiemann(Scene):
             )
 
             informacion = VGroup(
-                MathTex(f"n={n}"),
-                MathTex(
-                    rf"\Delta x={dx:.4f}"
-                ),
-                MathTex(
-                    rf"R_{{{n}}}={suma:.4f}"
-                ),
-                MathTex(
-                    rf"\text{{Error}}={error:.4f}"
-                )
-            ).arrange(DOWN, aligned_edge=LEFT, buff=0.35)
+                MathTex(rf"n={n}"),
+                MathTex(rf"\Delta x={dx:.4f}"),
+                MathTex(rf"R_{{{n}}}={suma:.4f}"),
+                MathTex(rf"\text{{Error}}={error:.4f}")
+            ).arrange(
+                DOWN,
+                aligned_edge=LEFT,
+                buff=0.35
+            )
 
-            informacion.scale(0.75)
-            informacion.to_edge(RIGHT).shift(DOWN * 0.6)
+            informacion.scale(0.7)
+            informacion.to_edge(RIGHT).shift(DOWN * 0.5)
 
             if rectangulos_anteriores is None:
                 self.play(
@@ -109,7 +112,7 @@ class SumasRiemann(Scene):
 
         conclusion = Text(
             "A mayor n, menor error de aproximacion",
-            font_size=30,
+            font_size=27,
             color=GREEN
         ).to_edge(DOWN)
 
@@ -117,22 +120,22 @@ class SumasRiemann(Scene):
         self.wait(3)
 
 
+
 class IntroduccionRiemann(Scene):
     def construct(self):
-  
         titulo = Text(
             "De pocos rectangulos a una mejor aproximacion",
-            font_size=34
+            font_size=32
         ).to_edge(UP)
 
         pregunta = Text(
             "Como aproximamos el area bajo una curva?",
-            font_size=27
-        ).next_to(titulo, DOWN, buff=0.5)
+            font_size=26
+        ).next_to(titulo, DOWN, buff=0.4)
 
         ejes = Axes(
-            x_range=[0, 2.5, 0.5],
-            y_range=[0, 4.5, 1],
+            x_range=[0, 4.5, 1],
+            y_range=[0, 36, 8],
             x_length=6,
             y_length=3.5,
             axis_config={"include_numbers": True},
@@ -140,38 +143,43 @@ class IntroduccionRiemann(Scene):
         ).shift(DOWN * 0.8)
 
         curva = ejes.plot(
-            lambda x: x**2,
-            x_range=[0, 2],
+            funcion,
+            x_range=[A, B],
             color=YELLOW
         )
 
         etiqueta = MathTex(
-            "f(x)=x^2",
+            r"f(x)=2x^2",
             color=YELLOW
-        ).next_to(ejes, RIGHT).shift(UP)
+        ).scale(0.8).next_to(ejes, RIGHT).shift(UP)
 
         area = ejes.get_area(
             curva,
-            x_range=[0, 2],
+            x_range=[A, B],
             color=BLUE,
             opacity=0.4
         )
 
         intervalo = MathTex(
-            r"x\in[0,2]"
+            r"x\in[0,4]"
         ).to_edge(DOWN)
-
 
         self.play(Write(titulo), run_time=2)
         self.play(FadeIn(pregunta), run_time=1.5)
         self.wait(1)
 
         self.play(Create(ejes), run_time=2)
-        self.play(Create(curva), Write(etiqueta), run_time=2)
+        self.play(
+            Create(curva),
+            Write(etiqueta),
+            run_time=2
+        )
         self.play(FadeIn(area), run_time=2)
         self.play(Write(intervalo), run_time=1)
 
         self.wait(3)
+
+
 
 class ConstruccionRectangulos(Scene):
     def construct(self):
@@ -181,63 +189,54 @@ class ConstruccionRectangulos(Scene):
         ).to_edge(UP)
 
         ejes = Axes(
-            x_range=[0, 2.5, 0.5],
-            y_range=[0, 4.5, 1],
+            x_range=[0, 4.5, 1],
+            y_range=[0, 36, 8],
             x_length=6,
             y_length=4,
             axis_config={"include_numbers": True},
             tips=False
-        ).shift(LEFT * 1.6 + DOWN * 0.5)
+        ).shift(LEFT * 1.4 + DOWN * 0.5)
 
         curva = ejes.plot(
-            lambda x: x**2,
-            x_range=[0, 2],
+            funcion,
+            x_range=[A, B],
             color=YELLOW
         )
 
-        formula_dx = MathTex(
-            r"\Delta x=\frac{2-0}{4}=0.5"
-        ).scale(0.8).to_edge(RIGHT).shift(UP * 1.5)
+        etiqueta = MathTex(
+            r"f(x)=2x^2",
+            color=YELLOW
+        ).scale(0.75).to_edge(RIGHT).shift(UP * 1.7)
 
-        explicacion = Text(
-            "Altura: extremo derecho",
-            font_size=23
-        ).next_to(formula_dx, DOWN, buff=0.5)
+        formula_dx = MathTex(
+            r"\Delta x=\frac{4-0}{4}=1"
+        ).scale(0.75).to_edge(RIGHT).shift(UP * 0.7)
 
         self.play(Write(titulo))
-        self.play(Create(ejes), Create(curva))
-        self.play(Write(formula_dx), FadeIn(explicacion))
+        self.play(Create(ejes), Create(curva), run_time=2)
+        self.play(Write(etiqueta), Write(formula_dx))
+        self.wait(1)
 
-        rectangulos = VGroup()
-        puntos = VGroup()
+        # Construccion progresiva de los 4 rectangulos
+        for i in range(4):
+            izquierda = A + i
+            derecha = izquierda + 1
 
-        dx = 0.5
-
-        for i in range(1, 5):
-            x_izq = (i - 1) * dx
-            x_der = i * dx
-            altura = x_der**2
-
-            rectangulo = Polygon(
-                ejes.c2p(x_izq, 0),
-                ejes.c2p(x_der, 0),
-                ejes.c2p(x_der, altura),
-                ejes.c2p(x_izq, altura),
+            rectangulo = ejes.get_riemann_rectangles(
+                curva,
+                x_range=[izquierda, derecha],
+                dx=1,
+                input_sample_type="right",
                 color=BLUE,
-                fill_color=BLUE,
-                fill_opacity=0.35,
+                fill_opacity=0.45,
                 stroke_width=2
             )
 
-            # Punto de contacto con la curva
             punto = Dot(
-                ejes.c2p(x_der, altura),
+                ejes.c2p(derecha, funcion(derecha)),
                 color=RED,
-                radius=0.07
+                radius=0.06
             )
-
-            rectangulos.add(rectangulo)
-            puntos.add(punto)
 
             self.play(
                 FadeIn(rectangulo),
@@ -247,11 +246,12 @@ class ConstruccionRectangulos(Scene):
             self.wait(0.5)
 
         resultado = MathTex(
-            r"R_4=3.75"
-        ).scale(0.9).to_edge(RIGHT).shift(DOWN * 1.5)
+            r"R_4=2+8+18+32=60"
+        ).scale(0.75).to_edge(RIGHT).shift(DOWN * 0.8)
 
-        self.play(Write(resultado))
+        self.play(Write(resultado), run_time=2)
         self.wait(3)
+
 
 class ComparacionAreaExacta(Scene):
     def construct(self):
@@ -261,8 +261,8 @@ class ComparacionAreaExacta(Scene):
         ).to_edge(UP)
 
         ejes = Axes(
-            x_range=[0, 2.3, 0.5],
-            y_range=[0, 4.5, 1],
+            x_range=[0, 4.5, 1],
+            y_range=[0, 36, 8],
             x_length=6,
             y_length=4,
             axis_config={"include_numbers": True},
@@ -279,21 +279,22 @@ class ComparacionAreaExacta(Scene):
             curva,
             x_range=[A, B],
             color=GREEN,
-            opacity=0.3
+            opacity=0.35
         )
 
         formula = MathTex(
-            r"A=\int_0^2 x^2\,dx=\frac{8}{3}"
-        ).scale(0.75).to_edge(RIGHT).shift(UP * 1.5)
+            r"A=\int_0^4 2x^2\,dx",
+            r"=\frac{128}{3}"
+        ).scale(0.7).to_edge(RIGHT).shift(UP * 1.5)
 
-        valor_exacto = MathTex(
-            r"A\approx2.6667"
-        ).scale(0.8).next_to(formula, DOWN, buff=0.4)
+        area_decimal = MathTex(
+            r"A\approx42.6667"
+        ).scale(0.75).next_to(formula, DOWN, buff=0.3)
 
         self.play(Write(titulo))
-        self.play(Create(ejes), Create(curva))
-        self.play(FadeIn(area))
-        self.play(Write(formula), Write(valor_exacto))
+        self.play(Create(ejes), Create(curva), run_time=2)
+        self.play(FadeIn(area), Write(formula))
+        self.play(Write(area_decimal))
         self.wait(1)
 
         rectangulos_anteriores = None
@@ -310,22 +311,22 @@ class ComparacionAreaExacta(Scene):
                 dx=dx,
                 input_sample_type="right",
                 color=BLUE,
-                fill_opacity=0.35,
+                fill_opacity=0.5,
                 stroke_width=1
             )
 
             informacion = VGroup(
                 MathTex(rf"n={n}"),
                 MathTex(rf"R_{{{n}}}={suma:.4f}"),
-                MathTex(rf"E_{{{n}}}={error:.4f}")
+                MathTex(rf"\text{{Error}}={error:.4f}")
             ).arrange(
                 DOWN,
                 aligned_edge=LEFT,
-                buff=0.35
+                buff=0.3
             )
 
-            informacion.scale(0.8)
-            informacion.to_edge(RIGHT).shift(DOWN * 1)
+            informacion.scale(0.7)
+            informacion.to_edge(RIGHT).shift(DOWN * 0.7)
 
             if rectangulos_anteriores is None:
                 self.play(
@@ -346,19 +347,20 @@ class ComparacionAreaExacta(Scene):
                     run_time=2
                 )
 
-            self.wait(1.5)
+            self.wait(2)
 
             rectangulos_anteriores = rectangulos
             informacion_anterior = informacion
 
         conclusion = Text(
-            "El error disminuye cuando n aumenta",
-            font_size=26,
+            "La aproximacion se acerca al area exacta",
+            font_size=27,
             color=GREEN
         ).to_edge(DOWN)
 
         self.play(FadeIn(conclusion))
         self.wait(3)
+
 
 class ConclusionRiemann(Scene):
     def construct(self):
@@ -367,42 +369,37 @@ class ConclusionRiemann(Scene):
             font_size=34
         ).to_edge(UP)
 
-        self.play(Write(titulo))
-
-        # Relacion entre n y el ancho de los rectangulos
         formula_dx = MathTex(
-            r"\Delta x=\frac{2}{n}"
+            r"\Delta x=\frac{4}{n}"
         ).scale(1.2).shift(UP * 1.5)
 
         explicacion = Text(
             "Al aumentar n, disminuye el ancho",
-            font_size=28
-        ).next_to(formula_dx, DOWN, buff=0.5)
-
-        self.play(Write(formula_dx))
-        self.play(FadeIn(explicacion))
-        self.wait(2)
-
-        # Limpiar el centro para mostrar el limite
-        self.play(
-            FadeOut(formula_dx),
-            FadeOut(explicacion)
-        )
+            font_size=29
+        ).next_to(formula_dx, DOWN, buff=0.6)
 
         limite = MathTex(
-            r"\lim_{n\to\infty}R_n"
-            r"=\int_0^2x^2\,dx"
-            r"=\frac{8}{3}"
-        ).scale(1.05)
+            r"\lim_{n\to\infty}R_n",
+            r"=",
+            r"\int_0^4 2x^2\,dx",
+            r"=",
+            r"\frac{128}{3}"
+        ).scale(0.9).shift(DOWN * 0.7)
+
+        resultado = Text(
+            "Mas rectangulos, menor error",
+            font_size=32,
+            color=GREEN
+        ).to_edge(DOWN)
+
+        self.play(Write(titulo), run_time=2)
+        self.play(Write(formula_dx), run_time=2)
+        self.play(FadeIn(explicacion), run_time=2)
+        self.wait(1)
 
         self.play(Write(limite), run_time=3)
         self.wait(2)
 
-        mensaje = Text(
-            "Mas rectangulos, menor error",
-            font_size=30,
-            color=GREEN
-        ).next_to(limite, DOWN, buff=0.8)
-
-        self.play(FadeIn(mensaje))
+        self.play(FadeIn(resultado), run_time=2)
         self.wait(3)
+
